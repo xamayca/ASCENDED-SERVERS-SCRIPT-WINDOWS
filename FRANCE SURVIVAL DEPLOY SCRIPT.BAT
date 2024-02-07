@@ -1,4 +1,5 @@
 @echo off
+setlocal EnableDelayedExpansion
 cls
 
 :: Initial ARK server setup settings
@@ -99,7 +100,7 @@ echo.
 echo FRANCE SURVIVAL is a french community project based on ARK: Survival Ascended, made with love, Code and Network !
 echo.
 echo Waiting for 5 seconds before continuing...
-timeout /t 5
+timeout /t 5 /nobreak > nul
 goto :eof
 
 
@@ -385,7 +386,7 @@ set "restartAttempts=0"
 :monitorLoop
 echo.
 echo [LOG] Monitoring server crash is running, do not close this window...
-timeout /t 300
+timeout /t 300 /nobreak > nul
 tasklist | findstr /i "%Server_Executable%" > nul
 if errorlevel 1 (
     echo.
@@ -401,7 +402,7 @@ if errorlevel 1 (
     )
 ) else (
     echo.
-    echo [SUCCESS] Server is running successfully, no crash detected.
+    echo [SUCCESS] Server is running successfully, no crash detected, continue monitoring...
     set "restartAttempts=0"
 )
 goto monitorLoop
