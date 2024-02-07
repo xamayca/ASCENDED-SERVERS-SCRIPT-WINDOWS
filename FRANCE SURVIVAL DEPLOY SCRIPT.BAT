@@ -12,12 +12,12 @@ set "DriveLetter=C"
 
 :: Optional ARK server setup settings
 set "ServerPassword="
-set "Mods=928988"
+set "Mods="
 set "PassiveMods="
-set "RCONPort=11640"
+set "RCONPort="
 set "ClusterID="
 set "ClusterDir="
-set "ServerLocalIP=192.168.x.X"
+set "ServerLocalIP=192.168.x.x"
 set "ForceRespawnDinos=Yes"
 
 
@@ -55,6 +55,8 @@ call :CreateDirectory "%SteamCMD_Dir%"
 call :CreateDirectory "%Server_Dir%"
 :: Download and extract SteamCMD
 call :DownloadAndExtractSteamCMD
+:: Check mcrcon installation
+call :CheckMcrconInstallation
 :: Check for server updates
 call :CheckServerUpdates
 :: Display final server configuration
@@ -283,6 +285,37 @@ if not exist "%SteamCMD_Dir%\%SteamCMD_Executable%" (
 )
 echo.
 echo ------------------------------------------------------------------------------------------------------------------
+echo.
+goto :eof
+
+
+
+:CheckMcrconInstallation
+echo ------------------------------------------------------------------------------------------------------------------
+echo                                        CHECKING MCRCON INSTALLATION
+echo ------------------------------------------------------------------------------------------------------------------
+echo.
+echo [LOG] Checking mcrcon installation...
+set "mcrcon_Zip=%Server_Dir%\mcrcon.zip"
+set "mcrcon_Dir=%Server_Dir%\mcrcon"
+set "mcrcon_URL=https://github.com/Tiiffi/mcrcon/releases/download/v0.7.2/mcrcon-0.7.2-windows-x86-64.zip"
+if not exist "%mcrcon_Dir%\mcrcon.exe" (
+    if not exist "%mcrcon_Dir%" (
+        mkdir "%mcrcon_Dir%"
+    )
+    if not exist "%mcrcon_Zip%" (
+        powershell -Command "(New-Object System.Net.WebClient).DownloadFile('%mcrcon_URL%', '%mcrcon_Zip%')"
+    )
+    powershell -Command "Expand-Archive -LiteralPath '%mcrcon_Zip%' -DestinationPath '%mcrcon_Dir%'"
+    echo.
+    echo [LOG] Cleaning up installation files...
+    del "%mcrcon_Zip%"
+    echo.
+    echo [SUCCESS] mcrcon installed successfully.
+) else (
+    echo.
+    echo [SUCCESS] mcrcon is already installed.
+)
 echo.
 goto :eof
 
