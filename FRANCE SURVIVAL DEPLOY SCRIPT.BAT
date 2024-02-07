@@ -272,7 +272,7 @@ if not exist "%SteamCMD_Dir%\%SteamCMD_Executable%" (
     powershell -Command "Expand-Archive -LiteralPath '%SteamCMD_Zip%' -DestinationPath '%SteamCMD_Dir%'"
     echo.
     echo [LOG] Cleaning up installation files...
-    del "%SteamCMD_Dir%\%SteamCMD_Zip%"
+    del "%SteamCMD_Zip%"
     echo.
     echo [SUCCESS] SteamCMD installed successfully.
 ) else (
