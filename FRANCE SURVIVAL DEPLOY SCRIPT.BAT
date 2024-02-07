@@ -2,7 +2,7 @@
 cls
 
 :: Initial ARK server setup settings
-set "SessionName=FRANCE SURVIVAL TEST SERVER"
+set "SessionName=TEST SERVER"
 set "Map=TheIsland_WP"
 set "ServerAdminPassword="
 set "GamePort=7777"
@@ -19,6 +19,8 @@ set "ClusterDir="
 set "ServerLocalIP=192.168.x.x"
 set "ForceRespawnDinos=Yes"
 
+
+
 :: Script dependency (do not modify)
 set "AppID=2430930"
 set "Server_Dir=%DriveLetter%:\SERVER"
@@ -32,6 +34,12 @@ set "ScriptVersion=v1.0.6"
 set "ScriptDevelopers=xamayca and afteR"
 set "windowTitle=ARK: FRANCE SURVIVAL ASCENDED SERVERS SCRIPT (%ScriptVersion%) by %ScriptDevelopers%"
 
+
+:: Used to restart the script when a crash is detected.
+:ServerCrashRestart
+:: Display script information
+call :DisplayBanner
+call :DisplayScriptInfo
 :: Download and install VCRedist 2015, 2017, 2019, and 2022 Redistributable
 call :CheckAndInstallVCRedist2015-22
 :: Download and install certificate
@@ -49,7 +57,49 @@ call :DownloadAndExtractSteamCMD
 call :CheckServerUpdates
 :: Launch the ARK server
 call :LaunchARKServer
+:: Monitor the ARK server
+call :ServerMonitoring
 goto :eof
+
+
+
+:: Function definitions
+:DisplayBanner
+:: Display a custom banner for the script
+echo ------------------------------------------------------------------------------------------------------------------
+echo "............_____...............................................................__...............__.............";
+echo ".........._/.____\___________....____...____..____.....________.____________.._|__|__.._______..|..|............";
+echo "..........\...__\\_..__.\__..\../....\_/.___\/.__.\.../..___/..|..\_..__.\..\/./..\..\/./\__..\.|..|............";
+echo "...........|..|...|..|.\//.__.\|...|..\..\__\..___/...\___.\|..|../|..|.\/\.../|..|\.../../.__.\|..|__..........";
+echo "...........|__|...|__|..(____../___|../\___..>___..>./____..>____/.|__|....\_/.|__|.\_/..(____../____/..........";
+echo ".............................\/.....\/.....\/....\/.......\/..................................\/................";
+echo ------------------------------------------------------------------------------------------------------------------
+goto :eof
+
+:DisplayScriptInfo
+:: Display information about the script, its developers, and community links
+echo.
+echo This script is developed by %ScriptDevelopers% for helping peoples to host ARK: Survival Ascended Servers!
+echo.
+echo VISIT OUR WEBSITE: https://www.france-survival.fr/
+echo.
+echo CHECK OUT OUR GITHUB REPOSITORY: https://github.com/xamayca/FRANCE-SURVIVAL-ASCENDED-SERVER-SCRIPT
+echo.
+echo JOIN OUR DISCORD COMMUNITY FRENCH PLAYER: https://discord.gg/F7pQyrRDd8
+echo.
+echo FOLLOW US ON INSTAGRAM: https://www.instagram.com/francesurvival/
+echo.
+echo LIKE OUR FACEBOOK PAGE: https://www.facebook.com/profile.php?id=61553584645099
+echo.
+echo Thank you to all contributors and community members for your support!
+echo.
+echo FRANCE SURVIVAL is a french community project based on ARK: Survival Ascended, made with love, Code and Network !
+echo.
+echo Waiting for 5 seconds before continuing...
+timeout /t 5
+goto :eof
+
+
 
 :CheckAndInstallVCRedist2015-22
 echo ------------------------------------------------------------------------------------------------------------------
@@ -97,6 +147,8 @@ echo ---------------------------------------------------------------------------
 echo.
 goto :eof
 
+
+
 :DownloadAndInstallCertificate
 echo ------------------------------------------------------------------------------------------------------------------
 echo                    CHECKING AND INSTALLING CERTIFICATE, PLEASE WAIT...
@@ -135,6 +187,8 @@ echo ---------------------------------------------------------------------------
 echo.
 goto :eof
 
+
+
 :ConfigureFirewallRules
 echo ------------------------------------------------------------------------------------------------------------------
 echo                         CHECKING AND CONFIGURING FIREWALL RULES FOR GAME PORTS, PLEASE WAIT...
@@ -153,6 +207,8 @@ echo.
 echo ------------------------------------------------------------------------------------------------------------------
 echo.
 goto :eof
+
+
 
 
 :CheckDrive
@@ -177,6 +233,8 @@ echo.
 goto :eof
 
 
+
+
 :CreateDirectory
 echo ------------------------------------------------------------------------------------------------------------------
 echo                           CREATING DIRECTORIES FOR SERVER AND STEAM CMD, PLEASE WAIT...
@@ -196,6 +254,7 @@ echo.
 echo ------------------------------------------------------------------------------------------------------------------
 echo.
 goto :eof
+
 
 
 :DownloadAndExtractSteamCMD
@@ -223,6 +282,8 @@ echo ---------------------------------------------------------------------------
 echo.
 goto :eof
 
+
+
 :CheckServerUpdates
 echo ------------------------------------------------------------------------------------------------------------------
 echo                                 CHECKING FOR SERVER UPDATE, PLEASE WAIT...
@@ -234,6 +295,38 @@ echo.
 echo ------------------------------------------------------------------------------------------------------------------
 echo.
 goto :eof
+
+
+
+:DisplayConfigurations
+echo.
+echo ------------------------------------------------------------------------------------------------------------------
+echo                                    SERVER CONFIGURATION SUMMARY
+echo ------------------------------------------------------------------------------------------------------------------
+call :DisplayConfigValue "Session Name"          "%SessionName%"
+call :DisplayConfigValue "Map"                   "%Map%"
+call :DisplayConfigValue "Server Admin Password" "%ServerAdminPassword%"
+call :DisplayConfigValue "Port"                  "%GamePort%"
+call :DisplayConfigValue "Max Players"           "%MaxPlayers%"
+call :DisplayConfigValue "Drive Letter"          "%DriveLetter%"
+call :DisplayConfigValue "Server Password"       "%ServerPassword%"
+call :DisplayConfigValue "Mods"                  "%Mods%"
+call :DisplayConfigValue "Passive Mods"          "%Passivemods%"
+call :DisplayConfigValue "RCON Port"             "%RCONPort%"
+call :DisplayConfigValue "Cluster ID"            "%ClusterID%"
+call :DisplayConfigValue "Script Version"        "%ScriptVersion%"
+call :DisplayConfigValue "Script Developers"     "%ScriptDevelopers%"
+echo ------------------------------------------------------------------------------------------------------------------
+goto :eof
+
+:DisplayConfigValue
+set "ConfigName=%~1"
+set "ConfigValue=%~2"
+if not defined ConfigValue set "ConfigValue=Not Defined"
+echo   %ConfigName%: %ConfigValue%
+goto :eof
+
+
 
 :LaunchARKServer
 echo ------------------------------------------------------------------------------------------------------------------
@@ -271,8 +364,6 @@ set "LaunchOptions=%LaunchOptions% -ForceRespawnDinos"
 echo ForceRespawnDinos option added to the launch command...
 echo.
 )
-
-:: Lancer le serveur
 echo [LOG] Launching server with the following options: %LaunchOptions%
 start "" /wait /b "%Executable_Dir%\%Server_Executable%" %LaunchOptions%
 echo [SUCCESS] ARK Server launched. Monitor this window for server logs.
@@ -280,3 +371,34 @@ echo.
 echo ------------------------------------------------------------------------------------------------------------------
 echo.
 goto :eof
+
+
+
+:ServerMonitoring
+echo ------------------------------------------------------------------------------------------------------------------
+echo                                      MONITORING ARK SERVER FOR CRASHES...
+echo ------------------------------------------------------------------------------------------------------------------
+set "restartAttempts=0"
+:monitorLoop
+echo.
+echo [LOG] Monitoring server crash is running, do not close this window...
+timeout /t 30
+tasklist | findstr /i "%Server_Executable%" > nul
+if errorlevel 1 (
+    echo.
+    echo [ERROR] Server process not found. Performing additional checks before restart...
+    set /a "restartAttempts+=1"
+    if !restartAttempts! LEQ 3 (
+        echo Restart attempt %restartAttempts%...
+        call :ServerCrashRestart
+    ) else (
+        echo.
+        echo [ERROR] Maximum restart attempts reached. Server failed to restart after multiple attempts. Please check the server manually.
+        goto :eof
+    )
+) else (
+    echo.
+    echo [SUCCESS] Server is running successfully, no crash detected.
+    set "restartAttempts=0"
+)
+goto monitorLoop
