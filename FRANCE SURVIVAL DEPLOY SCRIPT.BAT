@@ -2,9 +2,9 @@
 cls
 
 :: Initial ARK server setup settings
-set "SessionName=FRANCE SURVIVAL TEST SERVER"
+set "SessionName=TEST SERVER"
 set "Map=TheIsland_WP"
-set "ServerAdminPassword=0lympe60+"
+set "ServerAdminPassword="
 set "GamePort=7777"
 set "MaxPlayers=40"
 set "DriveLetter=C"
@@ -16,7 +16,7 @@ set "PassiveMods="
 set "RCONPort=11640"
 set "ClusterID="
 set "ClusterDir="
-set "ServerLocalIP=192.168.1.101"
+set "ServerLocalIP=192.168.x.X"
 set "ForceRespawnDinos=Yes"
 
 
@@ -367,7 +367,7 @@ echo ForceRespawnDinos option added to the launch command...
 echo.
 )
 echo [LOG] Launching server with the following options: %LaunchOptions%
-start "" /wait /b "%Executable_Dir%\%Server_Executable%" %LaunchOptions%
+start "" /b "%Executable_Dir%\%Server_Executable%" %LaunchOptions%
 echo [SUCCESS] ARK Server launched. Monitor this window for server logs.
 echo.
 echo ------------------------------------------------------------------------------------------------------------------
@@ -404,3 +404,5 @@ if errorlevel 1 (
     set "restartAttempts=0"
 )
 goto monitorLoop
+goto :eof
+
