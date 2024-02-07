@@ -35,7 +35,7 @@ set "ScriptVersion=v1.0.6"
 set "ScriptDevelopers=xamayca and afteR"
 set "windowTitle=ARK: FRANCE SURVIVAL ASCENDED SERVERS SCRIPT (%ScriptVersion%) by %ScriptDevelopers%"
 
-title "%windowTitle%"
+title %windowTitle%
 
 :: Used to restart the script when a crash is detected.
 :ServerCrashRestart
