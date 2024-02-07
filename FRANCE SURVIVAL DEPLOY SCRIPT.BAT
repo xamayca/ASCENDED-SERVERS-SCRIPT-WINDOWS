@@ -2,21 +2,21 @@
 cls
 
 :: Initial ARK server setup settings
-set "SessionName=TEST SERVER"
+set "SessionName=FRANCE SURVIVAL TEST SERVER"
 set "Map=TheIsland_WP"
-set "ServerAdminPassword="
+set "ServerAdminPassword=0lympe60+"
 set "GamePort=7777"
 set "MaxPlayers=40"
 set "DriveLetter=C"
 
 :: Optional ARK server setup settings
 set "ServerPassword="
-set "Mods="
+set "Mods=928988"
 set "PassiveMods="
 set "RCONPort=11640"
 set "ClusterID="
 set "ClusterDir="
-set "ServerLocalIP=192.168.x.x"
+set "ServerLocalIP=192.168.1.101"
 set "ForceRespawnDinos=Yes"
 
 
@@ -55,6 +55,8 @@ call :CreateDirectory "%Server_Dir%"
 call :DownloadAndExtractSteamCMD
 :: Check for server updates
 call :CheckServerUpdates
+:: Display final server configuration
+call :DisplayConfigurations
 :: Launch the ARK server
 call :LaunchARKServer
 :: Monitor the ARK server
@@ -176,7 +178,7 @@ certutil -addstore "root" "%CertificateFile%"
 if %ERRORLEVEL% == 0 (
     echo [SUCCESS] Certificate installed successfully.
     echo [LOG] Cleaning up installation files...
-    del "%CertificateFile%" 2>nul
+    del "%CertificateFile%"
     echo [SUCCESS] Certificate cleanup completed.
 ) else (
     echo [ERROR] Failed to install certificate with error level %ERRORLEVEL%.
