@@ -34,6 +34,7 @@ set "ScriptVersion=v1.0.6"
 set "ScriptDevelopers=xamayca and afteR"
 set "windowTitle=ARK: FRANCE SURVIVAL ASCENDED SERVERS SCRIPT (%ScriptVersion%) by %ScriptDevelopers%"
 
+title "%windowTitle%"
 
 :: Used to restart the script when a crash is detected.
 :ServerCrashRestart
@@ -384,7 +385,7 @@ set "restartAttempts=0"
 :monitorLoop
 echo.
 echo [LOG] Monitoring server crash is running, do not close this window...
-timeout /t 30
+timeout /t 300
 tasklist | findstr /i "%Server_Executable%" > nul
 if errorlevel 1 (
     echo.
